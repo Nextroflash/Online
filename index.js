@@ -7,7 +7,7 @@ const { webhookURL: configWebhookURL, messageId } = require('./config');
 const bot = mineflayer.createBot({
   host: 'the8ghzlethalhvh.aternos.me',
   port: 44725,
-  username: 'GrimGotBetter'
+  username: 'PornStar'
 });
 
 const getOnlinePlayers = async () => {
