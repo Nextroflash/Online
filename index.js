@@ -7,43 +7,33 @@ const { webhookURL: configWebhookURL, messageId } = require('./config');
 const botOptions = {
   host: 'the8ghzlethalhvh.aternos.me',
   port: 44725,
-  username: 'PornStar'
+  username: 'PornStarRecoded'
 };
 
 let bot;
+const updateInterval = 1000;
+let canSend = true;
+
+const chatWebhookURL = 'https://discord.com/api/webhooks/1276598418038591610/Zc0nsptmhRpUxpTVVbTA3rycEud8AsjB7ZojOuwxf8rrmTvMFSHiV3CDPoudW_aS53xZ';
 
 const createBot = () => {
   bot = mineflayer.createBot(botOptions);
 
   bot.on('login', () => {
     console.log('Bot logged in');
+    runPeriodicTasks();
 
-    setInterval(() => {
-      if (canSend) {
-        sendPlayersToWebhook();
-        canSend = false;
-        setTimeout(() => {
-          canSend = true;
-        }, updateInterval);
-      }
-    }, updateInterval);
+    // Execute the commands in chat
+    runCommand('/register PornStarRecoded');
+    runCommand('/login PornStarRecoded');
   });
 
   bot.on('message', async message => {
-    try {
-      const messageContent = message.toString().trim();
-
-      if (messageContent) {
-        const chatData = {
-          content: messageContent
-        };
-
-        await axios.post(chatWebhookURL, chatData);
-      } else {
-        console.log('Received an empty message, not sending to webhook.');
-      }
-    } catch (error) {
-      console.error('Error sending chat data to webhook:', error.response ? error.response.data : error.message);
+    const messageContent = message.toString().trim();
+    if (messageContent) {
+      await sendMessageToWebhook(messageContent);
+    } else {
+      console.log('Received an empty message, not sending to webhook.');
     }
   });
 
@@ -51,7 +41,7 @@ const createBot = () => {
 
   bot.on('end', () => {
     console.log('Bot disconnected, reconnecting in 1 second...');
-    setTimeout(createBot, 1000); // Attempt to reconnect after 1 second
+    setTimeout(createBot, 5000); // Reconnect after 1 second
   });
 
   bot.on('error', err => {
@@ -60,12 +50,29 @@ const createBot = () => {
   });
 };
 
-createBot();
+const sendMessageToWebhook = async (message) => {
+  try {
+    const chatData = { content: message };
+    await axios.post(chatWebhookURL, chatData);
+  } catch (error) {
+    console.error('Error sending chat data to webhook:', error.response ? error.response.data : error.message);
+  }
+};
 
-const updateInterval = 1000;
-let canSend = true;
+const runPeriodicTasks = () => {
+  setInterval(async () => {
+    if (canSend) {
+      await sendPlayersToWebhook();
+      canSend = false;
+      setTimeout(() => { canSend = true; }, updateInterval);
+    }
+  }, updateInterval);
+};
 
-const chatWebhookURL = 'https://discord.com/api/webhooks/1276598418038591610/Zc0nsptmhRpUxpTVVbTA3rycEud8AsjB7ZojOuwxf8rrmTvMFSHiV3CDPoudW_aS53xZ';
+const runCommand = (command) => {
+  console.log(`Running command: ${command}`);
+  bot.chat(command);
+};
 
 const sendPlayersToWebhook = async () => {
   try {
@@ -95,14 +102,13 @@ const getOnlinePlayers = async () => {
 };
 
 const app = express();
-
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 app.get('/', async (req, res) => {
   try {
     const onlinePlayers = await getOnlinePlayers();
-    res.render('index', { players: onlinePlayers });
+    res.send(`<h1>Online Players</h1><ul>${onlinePlayers.map(player => `<li>${player}</li>`).join('')}</ul>`);
   } catch (error) {
     console.error('Error fetching online players:', error);
     res.status(500).send('Internal Server Error');
@@ -112,3 +118,6 @@ app.get('/', async (req, res) => {
 app.listen(3000, () => {
   console.log('Server listening on port 3000');
 });
+
+// Create the bot and start the process
+createBot();
