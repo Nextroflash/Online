@@ -24,7 +24,6 @@ const createBot = () => {
     runPeriodicTasks();
 
     // Execute the commands in chat
-    runCommand('/register PornStarRecoded');
     runCommand('/login PornStarRecoded');
   });
 
