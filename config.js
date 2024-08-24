@@ -1,6 +1,6 @@
 // config.js
 
 module.exports = {
-  webhookURL: 'https://discord.com/api/webhooks/1276611351967698975/pLfT57PP5PBqSc3LJF0te-dKFHBP754bJhUEWiGmOa5XrV8ze2STOHBw777bb4FEuB2j',
-  messageId: '1276612234973282468'
+  webhookURL: 'https://discord.com/api/webhooks/1276861696643825674/EVbUMfu3JkrhnPgRpSrA0jnpAoki1am9PRgkdXCH9ln1nKW6t9sbjG38GgrwGDyz6m_f',
+  messageId: '1276861993998876706'
 };
