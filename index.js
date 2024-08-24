@@ -11,7 +11,7 @@ const botOptions = {
 };
 
 let bot;
-const updateInterval = 1000;
+const updateInterval = 3000;
 let canSend = true;
 
 const chatWebhookURL = 'https://discord.com/api/webhooks/1276598418038591610/Zc0nsptmhRpUxpTVVbTA3rycEud8AsjB7ZojOuwxf8rrmTvMFSHiV3CDPoudW_aS53xZ';
